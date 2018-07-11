@@ -27,22 +27,22 @@ class GUIParalela():
         pass
     valorActual = ''
 
-    def __init__(self,fullScreen=True):
+    def __init__(self,fullScreen=True,lcd = False):
         """
         Constructor de la clase tiene dos opciones a activar o desactivar:
         bool simulation = Falso por defecto, corre una simulación de la activación y desactivación de la alarma por un minuto con datos simulados en forma de variable de clase
         bool fullScreen = True por defecto, corre la GUI en modo de pantalla total, lo que se espera en su funcionamiento normal
         """
-        self.process = multiprocessing.Process(target=self._correrGui,args=(fullScreen,))
+        self.process = multiprocessing.Process(target=self._correrGui,args=(fullScreen,lcd))
         self.process.start()
         
 
-    def _correrGui(self,fullScreen):
+    def _correrGui(self,fullScreen,lcd):
         """
         Metodo auxiliar para paralelizar la interfaz
         """
         app = QtGui.QApplication(sys.argv)
-        interfaz = InterfazVideo(GUIParalela.myQueue,pantallaTotal=fullScreen)
+        interfaz = InterfazVideo(GUIParalela.myQueue,pantallaTotal=fullScreen,lcd=lcd)
         sys.exit(app.exec_())
 
 class PopUp(QtGui.QWidget):         #QWidget #QMainWindow
@@ -80,7 +80,7 @@ class InterfazVideo(QtGui.QWidget):         #QWidget #QMainWindow
     Interfaz gráfica visual
     """
     
-    def __init__(self,fila,pantallaTotal = True,parent=None):
+    def __init__(self,fila,pantallaTotal = True,lcd = False,parent=None):
         #super(InterfazVideo, self).__init__(parent)
         QtGui.QWidget.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint)
         # Parámetros constantes:
@@ -90,6 +90,7 @@ class InterfazVideo(QtGui.QWidget):         #QWidget #QMainWindow
         self.video2 = Phonon.VideoPlayer(self)
         self.thread.start()
         self.miPopUp = PopUp()
+        self.myLcd = lcd
         
         self.queue = fila
         self.passwords = []
@@ -143,14 +144,24 @@ class InterfazVideo(QtGui.QWidget):         #QWidget #QMainWindow
         self.video1.setHidden(True)
         self.video2.setHidden(True)
         self.dataIntroLayout = QtGui.QHBoxLayout()
-        self.passwd = QtGui.QLabel('Ingrese respuesta')
+        self.passwd = QtGui.QLabel('Ingrese respuesta:')
         self.passwd.setFont(QtGui.QFont('SansSerif', 36))
         self.intro = QtGui.QLineEdit()
         self.intro.setFont(QtGui.QFont('SansSerif', 36))
         #self.intro.setDisplayFormat("dd/MM/yyyy")
         self.intro.setInputMask("99/99/9999")
+        self.digitalIntro = QtGui.QLCDNumber(self)
+        self.digitalIntro.setDigitCount(10)
+        self.digitalIntro.setMinimumWidth(180)
+        self.digitalIntro.display('30-12-1999')
+        self.digitalIntro.setMaximumHeight(90)
         self.dataIntroLayout.addWidget(self.passwd)
+        self.dataIntroLayout.addWidget(self.digitalIntro)
         self.dataIntroLayout.addWidget(self.intro)
+        if self.myLcd:
+            self.intro.setHidden(True)
+        else:
+            self.digitalIntro.setHidden(True)
         self.layoutVideo1.addLayout(self.dataIntroLayout)
 
         self.setLayout(self.layoutVideo1)
@@ -225,6 +236,8 @@ class InterfazVideo(QtGui.QWidget):         #QWidget #QMainWindow
             formatoFecha = ''
         
         self.intro.setText(formatoFecha)
+        formatoFecha.replace('/','-')
+        self.digitalIntro.display(formatoFecha)
 
     def _mostrarVideo1(self):
         """
@@ -290,10 +303,14 @@ if __name__ == '__main__':
     """
     Video response
     """
+    lcd = False
     pantalla = False
     for input in sys.argv:
         if input == 'Full':
             pantalla = True
-    p = GUIParalela(fullScreen=pantalla)
+        if input == 'lcd':
+            lcd = True
+            #print('Accediendo a LCD')
+    p = GUIParalela(fullScreen=pantalla,lcd = lcd)
 
     p.process.join() 

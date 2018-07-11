@@ -278,7 +278,8 @@ class ThreadClass(QtCore.QThread):
                         if valor == '#':
                             GUIParalela.valorActual = GUIParalela.valorActual[:-1]
                         else:
-                            GUIParalela.valorActual+= str(valor)
+                            if len(GUIParalela.valorActual)<8:
+                                GUIParalela.valorActual+= str(valor)
                         self.emit(QtCore.SIGNAL('ACTUALIZAR'))
                         #self.intro.setText(GUIParalela.valorActual)
             except:

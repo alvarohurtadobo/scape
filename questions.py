@@ -49,9 +49,9 @@ class PopUp(QtGui.QWidget):         #QWidget #QMainWindow
 
     def __init__(self):
         #super(InterfazPreguntas, self).__init__(parent)
-        QtGui.QWidget.__init__(self,pantallaTotal, None, QtCore.Qt.WindowStaysOnTopHint)
+        QtGui.QWidget.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint)
         # Parámetros constantes:
-        self.pantallaTotal = pantallaTotal
+        self.pantallaTotal = False
         self.titulo = 'Scape room'
         self.etiqueta = QtGui.QLabel('Correcta')
         self.imagen = QtGui.QLabel(self)
@@ -67,6 +67,9 @@ class PopUp(QtGui.QWidget):         #QWidget #QMainWindow
         self.setWindowTitle(self.titulo)
         resolution = QtGui.QDesktopWidget().screenGeometry()
         self.move((resolution.width() / 2) - (self.frameSize().width() / 2),(resolution.height() / 2) - (self.frameSize().height() / 2)) 
+    
+    def establecerAPantallaTotal(self):
+        self.pantallaTotal = True
 
     def showCorrecta(self):
         self.etiqueta.setText('¡¡Respuesta Correcta!!')
@@ -108,7 +111,8 @@ class InterfazPreguntas(QtGui.QWidget):         #QWidget #QMainWindow
         QtGui.QWidget.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint)
         # Parámetros constantes:
         self.titulo = 'Scape Room'
-        self.miRespuestaEnVentana = PopUp(pantallaTotal)
+        self.miRespuestaEnVentana = PopUp()
+        self.miRespuestaEnVentana.establecerAPantallaTotal()
         self.thread = ThreadClass(fila)
 
         self.listaPreguntas =[] #id,pregunta,respuesta

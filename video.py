@@ -153,7 +153,7 @@ class InterfazVideo(QtGui.QWidget):         #QWidget #QMainWindow
         self.digitalIntro = QtGui.QLCDNumber(self)
         self.digitalIntro.setDigitCount(10)
         self.digitalIntro.setMinimumWidth(180)
-        self.digitalIntro.display('30-12-1999')
+        self.digitalIntro.display('  -  -    ')
         self.digitalIntro.setMaximumHeight(90)
         self.dataIntroLayout.addWidget(self.passwd)
         self.dataIntroLayout.addWidget(self.digitalIntro)
@@ -187,7 +187,8 @@ class InterfazVideo(QtGui.QWidget):         #QWidget #QMainWindow
 
     def borrarTexto(self):
         GUIParalela.valorActual = ''
-        #self.intro.setText('')
+        self.intro.setText('')
+        self.digitalIntro.display('  -  -    ')
 
     def displayOverlay(self):
         self.popup = QtGui.QDialog(self,QtCore.Qt.WindowStaysOnTopHint)

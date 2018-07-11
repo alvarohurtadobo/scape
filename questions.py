@@ -49,8 +49,9 @@ class PopUp(QtGui.QWidget):         #QWidget #QMainWindow
 
     def __init__(self):
         #super(InterfazPreguntas, self).__init__(parent)
-        QtGui.QWidget.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint)
+        QtGui.QWidget.__init__(self,pantallaTotal, None, QtCore.Qt.WindowStaysOnTopHint)
         # Parámetros constantes:
+        self.pantallaTotal = pantallaTotal
         self.titulo = 'Scape room'
         self.etiqueta = QtGui.QLabel('Correcta')
         self.imagen = QtGui.QLabel(self)
@@ -70,21 +71,30 @@ class PopUp(QtGui.QWidget):         #QWidget #QMainWindow
     def showCorrecta(self):
         self.etiqueta.setText('¡¡Respuesta Correcta!!')
         self.imagen.setPixmap(self.imagenCorrecta)
-        self.show()
+        if self.pantallaTotal:
+            self.showFullScreen()
+        else:
+            self.show()
         QtTest.QTest.qWait(2000)
         self.hide()
 
     def showIncorrecta(self):
         self.etiqueta.setText('¡¡Respuesta Incorrecta!!')
         self.imagen.setPixmap(self.imagenIncorrecta)
-        self.show()
+        if self.pantallaTotal:
+            self.showFullScreen()
+        else:
+            self.show()
         QtTest.QTest.qWait(2000)
         self.hide()
 
     def showGanadora(self):
         self.etiqueta.setText('¡¡Felicidades!!')
         self.imagen.setPixmap(self.imagenGanadora)
-        self.show()
+        if self.pantallaTotal:
+            self.showFullScreen()
+        else:
+            self.show()
         QtTest.QTest.qWait(10000)
         self.hide()
 
@@ -98,7 +108,7 @@ class InterfazPreguntas(QtGui.QWidget):         #QWidget #QMainWindow
         QtGui.QWidget.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint)
         # Parámetros constantes:
         self.titulo = 'Scape Room'
-        self.miRespuestaEnVentana = PopUp()
+        self.miRespuestaEnVentana = PopUp(pantallaTotal)
         self.thread = ThreadClass(fila)
 
         self.listaPreguntas =[] #id,pregunta,respuesta

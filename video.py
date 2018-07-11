@@ -7,7 +7,10 @@ import multiprocessing
 from PyQt4 import QtGui, QtCore, QtTest
 from PyQt4.phonon import Phonon
 from time import sleep, strftime
-from gpio import MembraneMatrix
+try:
+    from gpio import MembraneMatrix
+except:
+    pass
 
 class GUIParalela():
     """
@@ -18,7 +21,10 @@ class GUIParalela():
     Presionar ESC para cerrar el GUI
     """
     myQueue = multiprocessing.Queue()
-    miTeclado = MembraneMatrix()
+    try:
+        miTeclado = MembraneMatrix()
+    except:
+        pass
     valorActual = ''
 
     def __init__(self,fullScreen=True):
@@ -99,6 +105,8 @@ class InterfazVideo(QtGui.QWidget):         #QWidget #QMainWindow
         self.connect(self.video2,QtCore.SIGNAL("finished()"),self._terminoVideo)
         self.connect(self.thread,QtCore.SIGNAL("ACTUALIZAR"),self.actualizarTexto)
         self.intro.returnPressed.connect(self.revisarRespuesta)
+        #self.intro.editingFinished.connect(self.revisarRespuesta) # Introduce ruido al final
+        
         # Al inicializarse la clase se muestra:
         if pantallaTotal:
             self.showFullScreen()
@@ -135,8 +143,12 @@ class InterfazVideo(QtGui.QWidget):         #QWidget #QMainWindow
         self.video1.setHidden(True)
         self.video2.setHidden(True)
         self.dataIntroLayout = QtGui.QHBoxLayout()
-        self.passwd = QtGui.QLabel('Ingrese valor')
-        self.intro = QtGui.QLineEdit('')
+        self.passwd = QtGui.QLabel('Ingrese respuesta')
+        self.passwd.setFont(QtGui.QFont('SansSerif', 36))
+        self.intro = QtGui.QLineEdit()
+        self.intro.setFont(QtGui.QFont('SansSerif', 36))
+        #self.intro.setDisplayFormat("dd/MM/yyyy")
+        self.intro.setInputMask("99/99/9999")
         self.dataIntroLayout.addWidget(self.passwd)
         self.dataIntroLayout.addWidget(self.intro)
         self.layoutVideo1.addLayout(self.dataIntroLayout)
@@ -164,7 +176,7 @@ class InterfazVideo(QtGui.QWidget):         #QWidget #QMainWindow
 
     def borrarTexto(self):
         GUIParalela.valorActual = ''
-        self.intro.setText('')
+        #self.intro.setText('')
 
     def displayOverlay(self):
         self.popup = QtGui.QDialog(self,QtCore.Qt.WindowStaysOnTopHint)
@@ -253,21 +265,24 @@ class ThreadClass(QtCore.QThread):
         Re implementación del método
         """
         while True:
-            if not GUIParalela.miTeclado.teclas.empty():
-                valor = GUIParalela.miTeclado.teclas.get() # valor = (estado, id, nombre)
-                
-                if valor == '*':
-                    self.emit(QtCore.SIGNAL('REVISAR'))
-                    print('Introducido: ',GUIParalela.valorActual)
+            try:
+                if not GUIParalela.miTeclado.teclas.empty():
+                    valor = GUIParalela.miTeclado.teclas.get() # valor = (estado, id, nombre)
+                    
+                    if valor == '*':
+                        self.emit(QtCore.SIGNAL('REVISAR'))
+                        print('Introducido: ',GUIParalela.valorActual)
 
-                    #self.intro.setText(GUIParalela.valorActual)
-                else:
-                    if valor == '#':
-                        GUIParalela.valorActual = GUIParalela.valorActual[:-1]
+                        #self.intro.setText(GUIParalela.valorActual)
                     else:
-                        GUIParalela.valorActual+= str(valor)
-                    self.emit(QtCore.SIGNAL('ACTUALIZAR'))
-                    #self.intro.setText(GUIParalela.valorActual)
+                        if valor == '#':
+                            GUIParalela.valorActual = GUIParalela.valorActual[:-1]
+                        else:
+                            GUIParalela.valorActual+= str(valor)
+                        self.emit(QtCore.SIGNAL('ACTUALIZAR'))
+                        #self.intro.setText(GUIParalela.valorActual)
+            except:
+                pass
                 
                 
 if __name__ == '__main__':

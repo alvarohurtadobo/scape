@@ -236,7 +236,7 @@ class InterfazVideo(QtGui.QWidget):         #QWidget #QMainWindow
             formatoFecha = ''
         
         self.intro.setText(formatoFecha)
-        formatoFecha.replace('/','-')
+        formatoFecha = formatoFecha.replace('/','-')
         self.digitalIntro.display(formatoFecha)
 
     def _mostrarVideo1(self):

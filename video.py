@@ -150,6 +150,7 @@ class InterfazVideo(QtGui.QWidget):         #QWidget #QMainWindow
         self.intro.setFont(QtGui.QFont('SansSerif', 36))
         #self.intro.setDisplayFormat("dd/MM/yyyy")
         self.intro.setInputMask("99/99/9999")
+        self.intro.setCursorPosition(0)
         self.digitalIntro = QtGui.QLCDNumber(self)
         self.digitalIntro.setDigitCount(10)
         self.digitalIntro.setMinimumWidth(180)
@@ -188,6 +189,7 @@ class InterfazVideo(QtGui.QWidget):         #QWidget #QMainWindow
     def borrarTexto(self):
         GUIParalela.valorActual = ''
         self.intro.setText('')
+        self.intro.setCursorPosition(0)
         self.digitalIntro.display('  -  -    ')
 
     def displayOverlay(self):

@@ -58,6 +58,7 @@ class PopUp(QtGui.QWidget):         #QWidget #QMainWindow
         self.imagenCorrecta = QtGui.QPixmap('./imagenes/correcta.png')
         self.imagenIncorrecta = QtGui.QPixmap('./imagenes/incorrecta.png')
         self.imagenGanadora = QtGui.QPixmap('./imagenes/ganadora.png')
+        self.imagenCasiGanadora = QtGui.QPixmap('./imagenes/casiGanadora.png')
 
         self.miLayout = QtGui.QVBoxLayout()
         self.miLayout.addWidget(self.imagen)
@@ -94,6 +95,16 @@ class PopUp(QtGui.QWidget):         #QWidget #QMainWindow
     def showGanadora(self):
         self.etiqueta.setText('¡¡Felicidades!!')
         self.imagen.setPixmap(self.imagenGanadora)
+        if self.pantallaTotal:
+            self.showFullScreen()
+        else:
+            self.show()
+        QtTest.QTest.qWait(10000)
+        self.hide()
+
+    def showCasiGanadora(self):
+        self.etiqueta.setText('¡Ya casi lo logras!')
+        self.imagen.setPixmap(self.imagenCasiGanadora)
         if self.pantallaTotal:
             self.showFullScreen()
         else:
@@ -147,6 +158,8 @@ class InterfazPreguntas(QtGui.QWidget):         #QWidget #QMainWindow
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(7, GPIO.OUT) 
         GPIO.output(7, GPIO.HIGH)
+        GPIO.setup(5, GPIO.OUT) 
+        GPIO.output(5, GPIO.HIGH)
 
     def initUI(self):
         """
@@ -253,6 +266,10 @@ class InterfazPreguntas(QtGui.QWidget):         #QWidget #QMainWindow
                 GPIO.output(7, GPIO.HIGH)
                 self.estadoActual = 1
             else:
+                if self.estadoActual == self.maximoNuemeroPreguntas:
+                    GPIO.output(5, GPIO.LOW)
+                    self.miRespuestaEnVentana.showCasiGanadora()
+                    GPIO.output(5, GPIO.HIGH)
                 self.miRespuestaEnVentana.showCorrecta()
             self.actualizarLayout(self.estadoActual)
         else:

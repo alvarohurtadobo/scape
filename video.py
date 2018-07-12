@@ -44,6 +44,9 @@ class GUIParalela():
         app = QtGui.QApplication(sys.argv)
         interfaz = InterfazVideo(GUIParalela.myQueue,pantallaTotal=fullScreen,lcd=lcd)
         sys.exit(app.exec_())
+        
+    def __del__(self):
+        self.process.join()
 
 class PopUp(QtGui.QWidget):         #QWidget #QMainWindow
     """

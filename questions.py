@@ -41,6 +41,9 @@ class GUIParalela():
         interfaz = InterfazPreguntas(GUIParalela.myQueue,pantallaTotal=fullScreen)
         sys.exit(app.exec_())
 
+    def __del__(self):
+        self.process.join()
+
 
 class PopUp(QtGui.QWidget):         #QWidget #QMainWindow
     """

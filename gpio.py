@@ -50,6 +50,7 @@ class MembraneMatrix():
 			GPIO.cleanup()
 
 	def __del__(self):
+		GPIO.cleanup()
 		self.p.join()
 
 if __name__ == '__main__':

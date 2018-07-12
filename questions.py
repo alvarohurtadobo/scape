@@ -109,7 +109,7 @@ class PopUp(QtGui.QWidget):         #QWidget #QMainWindow
             self.showFullScreen()
         else:
             self.show()
-        QtTest.QTest.qWait(10000)
+        QtTest.QTest.qWait(2000)
         self.hide()
 
 class InterfazPreguntas(QtGui.QWidget):         #QWidget #QMainWindow

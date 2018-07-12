@@ -126,7 +126,7 @@ class InterfazPreguntas(QtGui.QWidget):         #QWidget #QMainWindow
         # Parámetros constantes:
         self.titulo = 'Scape Room'
         self.miRespuestaEnVentana = PopUp()
-        self.miRespuestaEnVentana.establecerAPantallaTotal()
+            
         self.thread = ThreadClass(fila)
 
         self.listaPreguntas =[] #id,pregunta,respuesta
@@ -152,6 +152,7 @@ class InterfazPreguntas(QtGui.QWidget):         #QWidget #QMainWindow
 
         # Al inicializarse la clase se muestra:
         if pantallaTotal:
+            self.miRespuestaEnVentana.establecerAPantallaTotal()
             self.showFullScreen()
         else:
             self.show()
